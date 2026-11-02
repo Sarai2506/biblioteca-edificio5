@@ -1,0 +1,105 @@
+/* Estilos Globales Responsivos para la Biblioteca IPN */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 15px;
+}
+
+/* Contenedor fluido que se adapta a cualquier pantalla */
+.container {
+    width: 100%;
+    max-width: 800px;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    text-align: left;
+}
+
+/* Títulos y textos adaptativos */
+h1, h2, h3 {
+    color: #1b263b;
+    margin-bottom: 15px;
+    word-break: break-word;
+}
+
+p {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+/* Elementos de formulario responsivos */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* Botones adaptativos */
+button, input[type="submit"] {
+    width: 100%;
+    background-color: #1b263b;
+    color: white;
+    padding: 11px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 5px;
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color: #0d1b2a;
+}
+
+/* Enlaces limpios */
+a {
+    color: #00796b;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Media Queries para pantallas muy pequeñas (Móviles) */
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+        margin: 5px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    button, input[type="submit"] {
+        padding: 10px;
+        font-size: 13px;
+    }
+}

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso - Biblioteca Edificio 5 (IPN)</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1b263b 0%, #0d1b2a 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 15px;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            padding: 35px 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .ipn-badge {
+            background-color: #6f1d1b;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+        h1 {
+            color: #1b263b;
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            color: #555;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+        .input-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="password"], select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+            background-color: #fff;
+        }
+        input[type="text"]:focus, input[type="password"]:focus, select:focus {
+            border-color: #6f1d1b;
+            outline: none;
+        }
+        .btn-ingresar {
+            background-color: #6f1d1b;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        .btn-ingresar:hover {
+            background-color: #581513;
+        }
+        .links-container {
+            margin-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .links-container a {
+            color: #2b6cb0;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .links-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <span class="ipn-badge">ESIME ZACATENCO</span>
+        <h1>Biblioteca Edificio 5</h1>
+        <p class="subtitle">Control de Acceso e Inventario IPN</p>
+
+        <form action="/login" method="POST">
+            <!-- Selector de Tipo de Usuario para alternar comportamiento -->
+            <div class="input-group">
+                <label for="tipoUsuario">Tipo de Acceso:</label>
+                <select id="tipoUsuario" name="tipoUsuario" onchange="toggleAdminField()">
+                    <option value="alumno">Alumno (Registro de Visita)</option>
+                    <option value="administrador">Administrador (Sistema)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="boleta" id="labelBoleta">Número de Boleta:</label>
+                <input type="text" id="boleta" name="boleta" placeholder="Ej. 2025302430" required>
+            </div>
+
+            <!-- Campo de contraseña inicialmente oculto y sin requerir para alumnos -->
+            <div class="input-group" id="passwordGroup" style="display: none;">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" placeholder="••••••••">
+            </div>
+
+            <button type="submit" class="btn-ingresar" id="btnSubmit">Entrar / Registrar Visita</button>
+        </form>
+
+        <div class="links-container">
+            <a href="/forgot">¿Olvidaste tu contraseña?</a>
+            <a href="/register">¿No estás registrado? Crear cuenta institucional</a>
+        </div>
+    </div>
+
+    <script>
+        function toggleAdminField() {
+            const tipo = document.getElementById('tipoUsuario').value;
+            const passwordGroup = document.getElementById('passwordGroup');
+            const passwordInput = document.getElementById('password');
+            const labelBoleta = document.getElementById('labelBoleta');
+            const boletaInput = document.getElementById('boleta');
+            const btnSubmit = document.getElementById('btnSubmit');
+
+            if (tipo === 'administrador') {
+                passwordGroup.style.display = 'block';
+                passwordInput.setAttribute('required', 'true');
+                labelBoleta.textContent = 'Usuario Administrador / Boleta:';
+                boletaInput.placeholder = 'ADMIN001';
+                btnSubmit.textContent = 'Acceder al Panel';
+            } else {
+                passwordGroup.style.display = 'none';
+                passwordInput.removeAttribute('required');
+                passwordInput.value = ''; // Limpiar por seguridad
+                labelBoleta.textContent = 'Número de Boleta:';
+                boletaInput.placeholder = 'Ej. 2025302430';
+                btnSubmit.textContent = 'Entrar / Registrar Visita';
+            }
+        }
+    </script>
+</body>
+</html>

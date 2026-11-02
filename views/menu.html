@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Principal - Biblioteca Edificio 5</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .menu-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .user-badge {
+            background-color: #6f1d1b;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        .status-box {
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-left: 4px solid #00796b;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            font-size: 13px;
+        }
+        .status-box.alert {
+            border-left-color: #d90429;
+            background-color: #fff5f5;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .menu-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 18px;
+            text-decoration: none;
+            color: #1b263b;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .menu-card:hover {
+            border-color: #2b6cb0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .menu-card h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #1b263b;
+        }
+        .menu-card p {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+        .menu-card .btn-link {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2b6cb0;
+        }
+        .logout-container {
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 800px; text-align: left;">
+        <div class="menu-header">
+            <span class="user-badge">ESIME ZACATENCO</span>
+            <h2 id="saludo-alumno">¡Bienvenido(a)!</h2>
+            <p id="boleta-alumno" style="margin: 0; color: #64748b; font-weight: bold;"></p>
+        </div>
+
+        <!-- Alerta de estado de préstamos / adeudos -->
+        <div id="box-adeudo" class="status-box">
+            <strong>Estado en Biblioteca:</strong> <span id="texto-adeudo">Cargando información...</span>
+        </div>
+
+        <!-- Módulos principales del Menú -->
+        <div class="menu-grid">
+            <!-- Opción 1: Catálogo y Solicitud -->
+            <a id="link-catalogo" class="menu-card" href="#">
+                <div>
+                    <h3>📚 Catálogo de Libros</h3>
+                    <p>Busca títulos, autores o ISBN y solicita préstamos a 30 días de forma inmediata.</p>
+                </div>
+                <span class="btn-link">Explorar acervo →</span>
+            </a>
+
+            <!-- Opción 2: Mis Préstamos y Devolución -->
+            <a id="link-prestamos" class="menu-card" href="#">
+                <div>
+                    <h3>📋 Mis Préstamos y Devolución</h3>
+                    <p>Consulta tus libros activos, renueva plazos o realiza devoluciones en línea.</p>
+                </div>
+                <span class="btn-link">Gestionar préstamos →</span>
+            </a>
+
+            <!-- Opción 3: Historial Entregados -->
+            <a id="link-historial" class="menu-card" href="#">
+                <div>
+                    <h3>📖 Historial de Lecturas</h3>
+                    <p>Revisa el registro histórico de todos los libros que has devuelto exitosamente.</p>
+                </div>
+                <span class="btn-link">Ver historial →</span>
+            </a>
+
+            <!-- Opción 4: Obtención de Datos y Constancias -->
+            <a id="link-datos" class="menu-card" href="#" style="border-left: 4px solid #00796b;">
+                <div>
+                    <h3 style="color: #00796b;">📄 Datos y Constancias</h3>
+                    <p>Descarga tu historial en PDF por fechas o genera tu Carta de No Adeudo oficial.</p>
+                </div>
+                <span class="btn-link" style="color: #00796b;">Obtener constancias →</span>
+            </a>
+        </div>
+
+        <div class="logout-container">
+            <a href="/" style="color: #d90429; font-weight: bold;">← Cerrar Sesión</a>
+        </div>
+    </div>
+
+    <script>
+        // Extraer parámetros enviados en la URL por el login
+        const params = new URLSearchParams(window.location.search);
+        const boleta = params.get('boleta') || '';
+        const nombre = params.get('nombre') || 'Alumno';
+        const adeudo = params.get('adeudo') || 'Sin información de adeudos.';
+
+        // Renderizar datos del usuario
+        document.getElementById('saludo-alumno').innerText = `¡Bienvenido(a), ${nombre}!`;
+        document.getElementById('boleta-alumno').innerText = `Boleta: ${boleta}`;
+        
+        const boxAdeudo = document.getElementById('box-adeudo');
+        const textoAdeudo = document.getElementById('texto-adeudo');
+        textoAdeudo.innerText = adeudo;
+
+        if (adeudo.includes('CASTIGO') || adeudo.includes('retraso')) {
+            boxAdeudo.classList.add('alert');
+        }
+
+        // Vincular los enlaces manteniendo la sesión (boleta y nombre)
+        const paramsUrl = `?boleta=${boleta}&nombre=${encodeURIComponent(nombre)}`;
+        document.getElementById('link-catalogo').href = `/catalogo${paramsUrl}`;
+        document.getElementById('link-prestamos').href = `/prestamo${paramsUrl}`;
+        document.getElementById('link-historial').href = `/historial${paramsUrl}`;
+        document.getElementById('link-datos').href = `/datos${paramsUrl}`;
+    </script>
+</body>
+</html>

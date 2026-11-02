@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Libros Entregados</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container" style="max-width: 650px; text-align: left;">
+        <h2>Historial de Devoluciones</h2>
+        <p id="info-alumno" style="margin-bottom: 15px; color: #555;"></p>
+
+        <div style="max-height: 380px; overflow-y: auto;" id="lista-historial">
+            <p style="text-align: center; color: #777;">Cargando historial...</p>
+        </div>
+
+        <br>
+        <a id="btn-volver" href="#" style="font-weight: bold; color: #1b263b;">← Volver al Menú Principal</a>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const boleta = params.get('boleta');
+        const nombre = params.get('nombre');
+        
+        document.getElementById('info-alumno').innerText = `Alumno: ${nombre} (Boleta: ${boleta})`;
+        document.getElementById('btn-volver').href = `/menu?boleta=${boleta}&nombre=${encodeURIComponent(nombre)}`;
+
+        async function cargarHistorial() {
+            const res = await fetch(`/api/historial/${boleta}`);
+            const historial = await res.json();
+
+            const contenedor = document.getElementById('lista-historial');
+            contenedor.innerHTML = '';
+
+            if (historial.length === 0) {
+                contenedor.innerHTML = '<p style="text-align: center; color: #555; font-weight: bold;">No tienes registros de libros entregados previamente.</p>';
+                return;
+            }
+
+            historial.forEach(h => {
+                const item = document.createElement('div');
+                item.style.cssText = 'padding: 12px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 10px; background: #f9f9f9;';
+                item.innerHTML = `
+                    <strong>📚 ${h.titulo}</strong><br>
+                    <span style="font-size: 13px; color: #555;">Autor: ${h.autor}</span><br>
+                    <span style="font-size: 12px; color: #666;">Prestado el: ${h.fecha_prestamo.split('T')[0]} | Entregado a tiempo</span><br>
+                    <span style="font-size: 12px; color: green; font-weight: bold;">Estatus: ENTREGADO</span>
+                `;
+                contenedor.appendChild(item);
+            });
+        }
+
+        cargarHistorial();
+    </script>
+</body>
+</html>
