@@ -1,361 +1,257 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Configuración de codificación y responsividad para pantallas móviles y escritorio -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título de la pestaña del navegador -->
     <title>Panel de Administración - Biblioteca Edificio 5</title>
+    <!-- Vinculación con la hoja de estilos global externa -->
     <link rel="stylesheet" href="/css/style.css">
-    <style>
-        .admin-container {
-            width: 100%;
-            max-width: 950px;
-            margin: 20px auto;
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            text-align: left;
-        }
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 12px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .admin-header h2 {
-            margin: 0;
-            color: #1b263b;
-            font-size: 20px;
-        }
-        .logout-btn {
-            background-color: #d90429;
-            color: white;
-            padding: 7px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 12px;
-        }
-        .admin-subtitle {
-            color: #555;
-            font-size: 13px;
-            margin-bottom: 15px;
-        }
-        .tabs {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 10px;
-            flex-wrap: wrap;
-        }
-        .tab-btn {
-            padding: 8px 14px;
-            background: #e2e8f0;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            color: #4a5568;
-            font-size: 12px;
-            flex-grow: 1;
-            text-align: center;
-        }
-        .tab-btn.active {
-            background: #1b263b;
-            color: white;
-        }
-        .section-content {
-            display: none;
-        }
-        .section-content.active {
-            display: block;
-        }
-        .card-box {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-left: 4px solid #00796b;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-size: 13px;
-            word-break: break-word;
-        }
-        .edit-form {
-            background: #f1f5f9;
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 8px;
-            border: 1px solid #cbd5e1;
-            display: none;
-        }
-        .form-control-group {
-            margin-bottom: 6px;
-        }
-        .form-control-group label {
-            font-size: 11px;
-            font-weight: bold;
-            color: #333;
-            display: block;
-            margin-bottom: 2px;
-        }
-        .action-btn {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-            color: white;
-            margin-right: 4px;
-        }
-        .btn-edit { background-color: #2b6cb0; }
-        .btn-delete { background-color: #d90429; }
-        .btn-save { background-color: #00796b; width: 100%; padding: 8px; font-size: 12px; }
-        .btn-cancel { background-color: #64748b; width: 100%; padding: 8px; font-size: 12px; margin-top: 4px; }
-    </style>
 </head>
 <body>
-    <div class="admin-container">
-        <div class="admin-header">
-            <h2>Panel de Control (Administrador)</h2>
-            <a href="/" class="logout-btn">Cerrar Sesión</a>
-        </div>
-        <p class="admin-subtitle">Control total de acervo, usuarios y accesos de la ESIME Zacatenco.</p>
+    <!-- Contenedor principal del panel administrativo -->
+    <div class="admin-container" style="width: 100%; max-width: 950px; margin: 20px auto; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); text-align: left;">
         
-        <div class="tabs">
-            <button class="tab-btn active" onclick="cambiarSeccion('libros', event)">📚 Libros</button>
-            <button class="tab-btn" onclick="cambiarSeccion('usuarios', event)">👤 Usuarios</button>
-            <button class="tab-btn" onclick="cambiarSeccion('pendientes', event)">⏳ Pendientes</button>
-            <button class="tab-btn" onclick="cambiarSeccion('completados', event)">✅ Completados</button>
-            <button class="tab-btn" onclick="cambiarSeccion('visitas', event)">🚪 Visitas y Sanciones</button>
+        <!-- Cabecera del panel con título institucional y botón de salida -->
+        <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+            <h2 style="margin: 0; color: #1b263b; font-size: 20px;">Panel de Control (Administrador)</h2>
+            <!-- Enlace para cerrar sesión y regresar al login -->
+            <a href="/" class="logout-btn" style="background-color: #d90429; color: white; padding: 7px 12px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 12px;">Cerrar Sesión</a>
+        </div>
+        
+        <!-- Subtítulo descriptivo de ESIME Zacatenco -->
+        <p class="admin-subtitle" style="color: #555; font-size: 13px; margin-bottom: 15px;">Control total de acervo, usuarios y accesos de la ESIME Zacatenco.</p>
+        
+        <!-- Barra de navegación por pestañas (Tabs) -->
+        <div class="tabs" style="display: flex; gap: 6px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap;">
+            <!-- Botón de pestaña activo por defecto -->
+            <button class="tab-btn active" onclick="cambiarSeccion('libros', event)" style="padding: 8px 14px; background: #1b263b; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; font-size: 12px; flex-grow: 1; text-align: center;">📚 Libros</button>
+            <button class="tab-btn" onclick="cambiarSeccion('usuarios', event)" style="padding: 8px 14px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: #4a5568; font-size: 12px; flex-grow: 1; text-align: center;">👤 Usuarios</button>
+            <button class="tab-btn" onclick="cambiarSeccion('pendientes', event)" style="padding: 8px 14px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: #4a5568; font-size: 12px; flex-grow: 1; text-align: center;">⏳ Pendientes</button>
+            <button class="tab-btn" onclick="cambiarSeccion('completados', event)" style="padding: 8px 14px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: #4a5568; font-size: 12px; flex-grow: 1; text-align: center;">✅ Completados</button>
+            <button class="tab-btn" onclick="cambiarSeccion('visitas', event)" style="padding: 8px 14px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: #4a5568; font-size: 12px; flex-grow: 1; text-align: center;">🚪 Visitas</button>
         </div>
 
-        <!-- SECCIÓN 1: LIBROS -->
-        <div id="seccion-libros" class="section-content active">
+        <!-- SECCIÓN 1: GESTIÓN DE LIBROS Y ACERVO -->
+        <div id="seccion-libros" class="section-content active" style="display: block;">
             <h3 style="color: #1b263b; font-size: 15px; margin-bottom: 10px;">Agregar Nuevo Libro</h3>
-            <form action="/api/admin/libros/crear" method="POST" style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 15px;">
-                <input type="text" name="titulo" placeholder="Título del libro" required>
-                <input type="text" name="autor" placeholder="Autor" required>
-                <input type="text" name="isbn" placeholder="ISBN" required>
-                <textarea name="descripcion" placeholder="Descripción breve" rows="2"></textarea>
-                <label style="font-size: 11px; color: #555; font-weight: bold;">Cantidad total:</label>
-                <input type="number" name="cantidad_total" value="3" min="0" required>
-                <button type="submit" style="background: #00796b; width: 100%; padding: 10px; margin-top: 5px;">Registrar Libro</button>
+            <!-- Formulario para registrar libros nuevos al inventario -->
+            <form onsubmit="crearLibro(event)" style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 15px;">
+                <input type="text" id="nuevo-titulo" placeholder="Título del libro" required style="width:100%; padding:8px; margin-bottom:8px;">
+                <input type="text" id="nuevo-autor" placeholder="Autor" required style="width:100%; padding:8px; margin-bottom:8px;">
+                <input type="text" id="nuevo-isbn" placeholder="ISBN" required style="width:100%; padding:8px; margin-bottom:8px;">
+                <textarea id="nuevo-desc" placeholder="Descripción breve" rows="2" style="width:100%; padding:8px; margin-bottom:8px;"></textarea>
+                <label style="font-size: 11px; color: #555; font-weight: bold; display:block; margin-bottom:4px;">Cantidad total:</label>
+                <input type="number" id="nuevo-stock" value="3" min="0" required style="width:100%; padding:8px; margin-bottom:8px;">
+                <button type="submit" style="background: #00796b; color:white; border:none; width: 100%; padding: 10px; border-radius:4px; font-weight:bold; cursor:pointer;">Registrar Libro</button>
             </form>
 
             <h3 style="color: #1b263b; font-size: 15px; margin-bottom: 10px;">Inventario Actual</h3>
+            <!-- Contenedor dinámico donde cargamos la lista de libros desde la API -->
             <div id="lista-libros-admin" style="max-height: 350px; overflow-y: auto;">Cargando libros...</div>
         </div>
 
-        <!-- SECCIÓN 2: USUARIOS -->
-        <div id="seccion-usuarios" class="section-content">
+        <!-- SECCIÓN 2: GESTIÓN DE USUARIOS Y ROLES -->
+        <div id="seccion-usuarios" class="section-content" style="display: none;">
             <h3 style="color: #1b263b; font-size: 15px; margin-bottom: 10px;">Alumnos y Administradores</h3>
+            <!-- Contenedor dinámico de usuarios registrados -->
             <div id="lista-usuarios-admin" style="max-height: 400px; overflow-y: auto;">Cargando usuarios...</div>
         </div>
 
-        <!-- SECCIÓN 3: PENDIENTES -->
-        <div id="seccion-pendientes" class="section-content">
+        <!-- SECCIÓN 3: PRÉSTAMOS PENDIENTES Y RETRASADOS -->
+        <div id="seccion-pendientes" class="section-content" style="display: none;">
             <h3 style="color: #1b263b; font-size: 15px; margin-bottom: 10px;">Préstamos Activos y Retrasados</h3>
+            <!-- Contenedor dinámico de adeudos vigentes o vencidos -->
             <div id="lista-pendientes-admin" style="max-height: 400px; overflow-y: auto;">Cargando préstamos pendientes...</div>
         </div>
 
-        <!-- SECCIÓN 4: COMPLETADOS -->
-        <div id="seccion-completados" class="section-content">
+        <!-- SECCIÓN 4: HISTORIAL DE PRÉSTAMOS COMPLETADOS -->
+        <div id="seccion-completados" class="section-content" style="display: none;">
             <h3 style="color: #1b263b; font-size: 15px; margin-bottom: 10px;">Historial Completado</h3>
+            <!-- Contenedor dinámico de libros devueltos -->
             <div id="lista-completados-admin" style="max-height: 400px; overflow-y: auto;">Cargando historial...</div>
         </div>
 
-        <!-- SECCIÓN 5: VISITAS Y SANCIONES -->
-        <div id="seccion-visitas" class="section-content">
-            <h3 style="color: #1b263b; font-size: 15px; margin-bottom: 10px;">Control de Visitas, Préstamos y Sanciones</h3>
+        <!-- SECCIÓN 5: VISITAS EN PUERTA Y SANCIONES -->
+        <div id="seccion-visitas" class="section-content" style="display: none;">
+            <h3 style="color: #1b263b; font-size: 15px; margin-bottom: 10px;">Control de Visitas, Entrega y Sanciones</h3>
+            <!-- Contenedor dinámico de registros de entrada y evaluación de entregas (físico/en línea) -->
             <div id="lista-visitas-admin" style="max-height: 450px; overflow-y: auto;">Cargando registros...</div>
         </div>
     </div>
 
+    <!-- Script principal de control administrativo -->
     <script>
+        // Función para alternar la visibilidad de las pestañas al hacer clic
         function cambiarSeccion(seccion, evt) {
-            document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(`seccion-${seccion}`).classList.add('active');
-            evt.currentTarget.classList.add('active');
+            // Ocultamos todas las secciones de contenido
+            document.querySelectorAll('.section-content').forEach(el => el.style.display = 'none');
+            // Quitamos la clase activa de todos los botones de pestaña
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.style.background = '#e2e8f0';
+                el.style.color = '#4a5568';
+            });
+            // Mostramos únicamente la sección seleccionada
+            document.getElementById(`seccion-${seccion}`).style.display = 'block';
+            // Estilizamos el botón presionado como activo
+            evt.currentTarget.style.background = '#1b263b';
+            evt.currentTarget.style.color = 'white';
         }
 
+        // Función asíncrona para solicitar todos los datos del servidor (Backend API)
         async function cargarDatosAdmin() {
             try {
                 const res = await fetch('/api/admin/data');
                 const data = await res.json();
 
-                // 1. Libros
+                // 1. Renderizar la lista de libros en el DOM
                 const divLibros = document.getElementById('lista-libros-admin');
                 divLibros.innerHTML = '';
-                if (!data.libros || data.libros.length === 0) {
-                    divLibros.innerHTML = '<p style="color: #666;">No hay libros registrados.</p>';
-                } else {
-                    data.libros.forEach(l => {
-                        const box = document.createElement('div');
-                        box.className = 'card-box';
-                        box.innerHTML = `
-                            <strong style="color: #1b263b;">📖 ${l.titulo}</strong><br>
-                            <span style="color: #555;">Autor: ${l.autor} | ISBN: ${l.isbn || 'N/D'}</span><br>
-                            Disponibles: <strong>${l.disponibles}</strong> de ${l.cantidad_total}<br>
-                            <div style="margin-top: 8px; display: flex; gap: 5px;">
-                                <button onclick="toggleEditLibro(${l.id_libro})" class="action-btn btn-edit">Modificar</button>
-                                <a href="/api/admin/libros/eliminar/${l.id_libro}" onclick="return confirm('¿Estás seguro de eliminar este libro?');" class="action-btn btn-delete" style="text-decoration:none; display:inline-block; line-height: normal;">Eliminar</a>
+                data.libros.forEach(l => {
+                    const box = document.createElement('div');
+                    box.style.cssText = 'background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid #00796b; padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 13px;';
+                    box.innerHTML = `
+                        <strong style="color: #1b263b;">📖 ${l.titulo}</strong><br>
+                        <span style="color: #555;">Autor: ${l.autor} | ISBN: ${l.isbn || 'N/D'}</span><br>
+                        Disponibles: <strong>${l.disponibles}</strong> de ${l.cantidad_total}<br>
+                        <div style="margin-top: 8px; display: flex; gap: 5px;">
+                            <button onclick="toggleEditLibro(${l.id_libro})" style="background:#2b6cb0; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Modificar</button>
+                            <button onclick="eliminarLibro(${l.id_libro})" style="background:#d90429; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Eliminar</button>
+                        </div>
+                        <div id="edit-libro-${l.id_libro}" style="background:#f1f5f9; padding:10px; border-radius:6px; margin-top:8px; display:none;">
+                            <label>Título:</label><input type="text" id="edit-t-${l.id_libro}" value="${l.titulo}" style="width:100%; margin-bottom:5px;">
+                            <label>Autor:</label><input type="text" id="edit-a-${l.id_libro}" value="${l.autor}" style="width:100%; margin-bottom:5px;">
+                            <label>ISBN:</label><input type="text" id="edit-isbn-${l.id_libro}" value="${l.isbn || ''}" style="width:100%; margin-bottom:5px;">
+                            <label>Descripción:</label><textarea id="edit-d-${l.id_libro}" style="width:100%; margin-bottom:5px;">${l.descripcion || ''}</textarea>
+                            <div style="display:flex; gap:6px;">
+                                <div style="flex:1;"><label>Total:</label><input type="number" id="edit-ct-${l.id_libro}" value="${l.cantidad_total}" min="0" style="width:100%;"></div>
+                                <div style="flex:1;"><label>Disponibles:</label><input type="number" id="edit-disp-${l.id_libro}" value="${l.disponibles}" min="0" style="width:100%;"></div>
                             </div>
-                            <div id="edit-libro-${l.id_libro}" class="edit-form">
-                                <form action="/api/admin/libros/actualizar/${l.id_libro}" method="POST">
-                                    <div class="form-control-group"><label>Título:</label><input type="text" name="titulo" value="${l.titulo}" required></div>
-                                    <div class="form-control-group"><label>Autor:</label><input type="text" name="autor" value="${l.autor}" required></div>
-                                    <div class="form-control-group"><label>ISBN:</label><input type="text" name="isbn" value="${l.isbn || ''}" required></div>
-                                    <div class="form-control-group"><label>Descripción:</label><textarea name="descripcion" rows="2">${l.descripcion || ''}</textarea></div>
-                                    <div style="display:flex; gap:6px;">
-                                        <div class="form-control-group" style="flex:1;"><label>Total:</label><input type="number" name="cantidad_total" value="${l.cantidad_total}" min="0" required></div>
-                                        <div class="form-control-group" style="flex:1;"><label>Disponibles:</label><input type="number" name="disponibles" value="${l.disponibles}" min="0" required></div>
-                                    </div>
-                                    <button type="submit" class="action-btn btn-save">Guardar Cambios</button>
-                                    <button type="button" onclick="toggleEditLibro(${l.id_libro})" class="action-btn btn-cancel">Cancelar</button>
-                                </form>
-                            </div>
-                        `;
-                        divLibros.appendChild(box);
-                    });
-                }
+                            <button onclick="actualizarLibro(${l.id_libro})" style="background:#00796b; color:white; border:none; width:100%; padding:6px; margin-top:8px; cursor:pointer;">Guardar Cambios</button>
+                            <button onclick="toggleEditLibro(${l.id_libro})" style="background:#64748b; color:white; border:none; width:100%; padding:6px; margin-top:4px; cursor:pointer;">Cancelar</button>
+                        </div>
+                    `;
+                    divLibros.appendChild(box);
+                });
 
-                // 2. Usuarios
+                // 2. Renderizar la lista de usuarios en el DOM
                 const divUs = document.getElementById('lista-usuarios-admin');
                 divUs.innerHTML = '';
-                if (!data.usuarios || data.usuarios.length === 0) {
-                    divUs.innerHTML = '<p style="color: #666;">No hay usuarios registrados.</p>';
-                } else {
-                    data.usuarios.forEach(u => {
-                        const box = document.createElement('div');
-                        box.className = 'card-box';
-                        box.style.borderLeftColor = u.rol === 'admin' ? '#2b6cb0' : '#00796b';
-                        box.innerHTML = `
-                            <strong style="color: #1b263b;">👤 ${u.nombre}</strong> (Boleta: ${u.boleta})<br>
-                            <span style="color: #555;">Correo: ${u.email}</span><br>
-                            Rol: <strong style="color: ${u.rol === 'admin' ? '#2b6cb0':'#00796b'}">${u.rol.toUpperCase()}</strong><br>
-                            <div style="margin-top: 8px; display: flex; gap: 5px;">
-                                <button onclick="toggleEditUsuario('${u.boleta}')" class="action-btn btn-edit">Modificar</button>
-                                <a href="/api/admin/usuarios/eliminar/${u.boleta}" onclick="return confirm('¿Estás seguro de eliminar este usuario?');" class="action-btn btn-delete" style="text-decoration:none; display:inline-block; line-height: normal;">Eliminar</a>
-                            </div>
-                            <div id="edit-user-${u.boleta}" class="edit-form">
-                                <form action="/api/admin/usuarios/actualizar/${u.boleta}" method="POST">
-                                    <div class="form-control-group"><label>Nombre:</label><input type="text" name="nombre" value="${u.nombre}" required></div>
-                                    <div class="form-control-group"><label>Sexo:</label><input type="text" name="sexo" value="${u.sexo || ''}"></div>
-                                    <div class="form-control-group"><label>Unidad:</label><input type="text" name="unidad" value="${u.unidad_de_procedencia || ''}"></div>
-                                    <div class="form-control-group"><label>Correo:</label><input type="email" name="email" value="${u.email}" required></div>
-                                    <div class="form-control-group">
-                                        <label>Rol:</label>
-                                        <select name="rol">
-                                            <option value="alumno" ${u.rol === 'alumno' ? 'selected':''}>alumno</option>
-                                            <option value="admin" ${u.rol === 'admin' ? 'selected':''}>admin</option>
-                                        </select>
-                                    </div>
-                                    <button type="submit" class="action-btn btn-save">Guardar Cambios</button>
-                                    <button type="button" onclick="toggleEditUsuario('${u.boleta}')" class="action-btn btn-cancel">Cancelar</button>
-                                </form>
-                            </div>
-                        `;
-                        divUs.appendChild(box);
-                    });
-                }
+                data.usuarios.forEach(u => {
+                    const box = document.createElement('div');
+                    box.style.cssText = `background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid ${u.rol === 'admin' ? '#2b6cb0':'#00796b'}; padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 13px;`;
+                    box.innerHTML = `
+                        <strong style="color: #1b263b;">👤 ${u.nombre}</strong> (Boleta: ${u.boleta})<br>
+                        <span style="color: #555;">Correo: ${u.email}</span><br>
+                        Rol: <strong style="color: ${u.rol === 'admin' ? '#2b6cb0':'#00796b'}">${u.rol.toUpperCase()}</strong><br>
+                        <div style="margin-top: 8px; display: flex; gap: 5px;">
+                            <button onclick="toggleEditUsuario('${u.boleta}')" style="background:#2b6cb0; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Modificar</button>
+                            <button onclick="eliminarUsuario('${u.boleta}')" style="background:#d90429; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Eliminar</button>
+                        </div>
+                        <div id="edit-user-${u.boleta}" style="background:#f1f5f9; padding:10px; border-radius:6px; margin-top:8px; display:none;">
+                            <label>Nombre:</label><input type="text" id="eu-nombre-${u.boleta}" value="${u.nombre}" style="width:100%; margin-bottom:5px;">
+                            <label>Sexo:</label><input type="text" id="eu-sexo-${u.boleta}" value="${u.sexo || ''}" style="width:100%; margin-bottom:5px;">
+                            <label>Unidad:</label><input type="text" id="eu-unidad-${u.boleta}" value="${u.unidad_de_procedencia || ''}" style="width:100%; margin-bottom:5px;">
+                            <label>Correo:</label><input type="email" id="eu-email-${u.boleta}" value="${u.email}" style="width:100%; margin-bottom:5px;">
+                            <label>Rol:</label>
+                            <select id="eu-rol-${u.boleta}" style="width:100%; margin-bottom:5px;">
+                                <option value="alumno" ${u.rol === 'alumno' ? 'selected':''}>alumno</option>
+                                <option value="admin" ${u.rol === 'admin' ? 'selected':''}>admin</option>
+                            </select>
+                            <button onclick="actualizarUsuario('${u.boleta}')" style="background:#00796b; color:white; border:none; width:100%; padding:6px; margin-top:8px; cursor:pointer;">Guardar Cambios</button>
+                            <button onclick="toggleEditUsuario('${u.boleta}')" style="background:#64748b; color:white; border:none; width:100%; padding:6px; margin-top:4px; cursor:pointer;">Cancelar</button>
+                        </div>
+                    `;
+                    divUs.appendChild(box);
+                });
 
-                // 3. Pendientes
+                // 3. Renderizar préstamos pendientes o retrasados
                 const divPendientes = document.getElementById('lista-pendientes-admin');
                 divPendientes.innerHTML = '';
-                const pendientes = data.adeudos.filter(a => a.estatus === 'activo' || a.estatus === 'retrasado');
+                const pendientes = data.adeudos.filter(a => a.estatus === 'pendiente' || a.estatus === 'retrasado');
                 if (pendientes.length === 0) {
                     divPendientes.innerHTML = '<p style="color: green; font-weight: bold;">No hay préstamos pendientes.</p>';
                 } else {
                     pendientes.forEach(a => {
                         const box = document.createElement('div');
-                        box.className = 'card-box';
-                        box.style.borderLeftColor = a.estatus === 'retrasado' ? '#d90429' : '#f59e0b';
+                        box.style.cssText = `background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid ${a.estatus === 'retrasado' ? '#d90429' : '#f59e0b'}; padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 13px;`;
                         box.innerHTML = `
                             <strong>Alumno:</strong> ${a.alumno} (${a.boleta})<br>
                             <strong>Libro:</strong> ${a.titulo}<br>
-                            Límite: ${a.fecha_devolucion ? a.fecha_devolucion.split('T')[0] : 'N/D'}<br>
+                            Límite: ${a.fecha_devolucion.split('T')[0]}<br>
                             Estatus: <strong style="color: ${a.estatus === 'retrasado' ? '#d90429':'#f59e0b'}">${a.estatus.toUpperCase()}</strong>
                         `;
                         divPendientes.appendChild(box);
                     });
                 }
 
-                // 4. Completados
+                // 4. Renderizar historial completado
                 const divCompletados = document.getElementById('lista-completados-admin');
                 divCompletados.innerHTML = '';
-                const completados = data.adeudos.filter(a => a.estatus === 'entregado' || a.estatus === 'devuelto');
+                const completados = data.adeudos.filter(a => a.estatus === 'entregado');
                 if (completados.length === 0) {
                     divCompletados.innerHTML = '<p style="color: #666;">No hay registros completados.</p>';
                 } else {
                     completados.forEach(a => {
                         const box = document.createElement('div');
-                        box.className = 'card-box';
-                        box.style.borderLeftColor = '#00796b';
+                        box.style.cssText = 'background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid #00796b; padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 13px;';
                         box.innerHTML = `
                             <strong>Alumno:</strong> ${a.alumno} (${a.boleta})<br>
                             <strong>Libro:</strong> ${a.titulo}<br>
-                            Devolución: ${a.fecha_devolucion ? a.fecha_devolucion.split('T')[0] : 'N/D'}<br>
-                            Estatus: <strong style="color: #00796b;">ENTREGADO / DEVUELTO</strong>
+                            Devolución: ${a.fecha_devolucion.split('T')[0]}<br>
+                            Estatus: <strong style="color: #00796b;">ENTREGADO</strong>
                         `;
                         divCompletados.appendChild(box);
                     });
                 }
 
-                // 5. Visitas y Sanciones
+                // 5. Renderizar visitas y control de entregas/sanciones
                 const divVis = document.getElementById('lista-visitas-admin');
                 divVis.innerHTML = '';
-                if (!data.visitas || data.visitas.length === 0) {
-                    divVis.innerHTML = '<p style="color: #666;">No hay registros de visitas o préstamos generales.</p>';
-                } else {
-                    data.visitas.forEach(v => {
-                        const box = document.createElement('div');
-                        box.className = 'card-box';
-                        let colorSancion = '#00796b';
-                        if (v.sancion === 'Multa') colorSancion = '#d90429';
-                        if (v.sancion === 'Castigo') colorSancion = '#b7094c';
+                data.visitas.forEach(v => {
+                    const box = document.createElement('div');
+                    let colorSancion = '#00796b';
+                    if (v.sancion === 'Multa') colorSancion = '#d90429';
+                    if (v.sancion === 'Castigo') colorSancion = '#b7094c';
 
-                        box.innerHTML = `
-                            <strong>Préstamo ID:</strong> ${v.id_prestamo} | <strong>Boleta:</strong> ${v.boleta} | <strong>Libro:</strong> ${v.titulo || 'N/D'}<br>
-                            Observaciones: <span style="color: #555;">${v.observaciones || 'Sin observaciones registradas.'}</span><br>
-                            Sanción Actual: <strong style="color: ${colorSancion};">${v.sancion || 'Ninguna'}</strong><br>
-                            <div style="margin-top: 8px;">
-                                <button onclick="toggleEditVisita(${v.id_prestamo})" class="action-btn btn-edit">Evaluar / Sancionar</button>
-                            </div>
-                            <div id="edit-visita-${v.id_prestamo}" class="edit-form">
-                                <form action="/api/admin/visitas/actualizar/${v.id_prestamo}" method="POST">
-                                  <div class="form-control-group">
-                                    <label>Observaciones:</label>
-                                    <textarea name="observaciones" rows="2">${v.observaciones || ''}</textarea>
-                                  </div>
-                                  <div class="form-control-group">
-                                    <label>Sanción:</label>
-                                    <select name="sancion">
-                                      <option value="Ninguna" ${v.sancion === 'Ninguna' ? 'selected':''}>Ninguna</option>
-                                      <option value="Multa" ${v.sancion === 'Multa' ? 'selected':''}>Multa Económica</option>
-                                      <option value="Castigo" ${v.sancion === 'Castigo' ? 'selected':''}>Castigo (Bloqueo temporal)</option>
-                                    </select>
-                                  </div>
-                                <button type="submit" class="action-btn btn-save">Guardar Sanción</button>
-                                <button type="button" onclick="toggleEditVisita(${v.id_prestamo})" class="action-btn btn-cancel">Cancelar</button>
-                              </form>
-                          </div>
-                        `;
-                        divVis.appendChild(box);
-                    });
-                }
+                    box.style.cssText = `background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid ${colorSancion}; padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 13px;`;
+                    box.innerHTML = `
+                        <strong>Boleta:</strong> ${v.boleta} | <strong>Fecha:</strong> ${v.fecha ? v.fecha.split('T')[0] : 'N/D'} ${v.hora || ''}<br>
+                        <strong>Servicio:</strong> ${v.servicio || 'Entrada Biblioteca'}<br>
+                        Modalidad: <strong style="color: #2b6cb0;">${v.tipo_entrega || 'Físico'}</strong><br>
+                        Observaciones: <span style="color: #555;">${v.observaciones || 'Sin observaciones.'}</span><br>
+                        Sanción: <strong style="color: ${colorSancion};">${v.sancion || 'Ninguna'}</strong><br>
+                        <div style="margin-top: 8px;">
+                            <button onclick="toggleEditVisita(${v.id_visita})" style="background:#2b6cb0; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Evaluar Visita / Sanción</button>
+                        </div>
+                        <div id="edit-visita-${v.id_visita}" style="background:#f1f5f9; padding:10px; border-radius:6px; margin-top:8px; display:none;">
+                            <label>Tipo de Entrega:</label>
+                            <select id="v-entrega-${v.id_visita}" style="width:100%; margin-bottom:5px;">
+                                <option value="Físico" ${v.tipo_entrega === 'Físico' ? 'selected':''}>Físico</option>
+                                <option value="En Línea" ${v.tipo_entrega === 'En Línea' ? 'selected':''}>En Línea</option>
+                            </select>
+                            <label>Observaciones:</label>
+                            <textarea id="v-obs-${v.id_visita}" rows="2" style="width:100%; margin-bottom:5px;">${v.observaciones || ''}</textarea>
+                            <label>Sanción:</label>
+                            <select id="v-sancion-${v.id_visita}" style="width:100%; margin-bottom:5px;">
+                                <option value="Ninguna" ${v.sancion === 'Ninguna' ? 'selected':''}>Ninguna</option>
+                                <option value="Multa" ${v.sancion === 'Multa' ? 'selected':''}>Multa Económica</option>
+                                <option value="Castigo" ${v.sancion === 'Castigo' ? 'selected':''}>Castigo (Bloqueo temporal)</option>
+                            </select>
+                            <button onclick="actualizarVisita(${v.id_visita})" style="background:#00796b; color:white; border:none; width:100%; padding:6px; margin-top:8px; cursor:pointer;">Guardar Evaluación</button>
+                            <button onclick="toggleEditVisita(${v.id_visita})" style="background:#64748b; color:white; border:none; width:100%; padding:6px; margin-top:4px; cursor:pointer;">Cancelar</button>
+                        </div>
+                    `;
+                    divVis.appendChild(box);
+                });
 
-            } catch (e) {
-                console.error('Error al cargar datos del panel:', e);
+            } catch (error) {
+                console.error("Error al cargar los datos del panel:", error);
             }
         }
 
+        // Funciones auxiliares para desplegar formularios de edición
         function toggleEditLibro(id) {
             const form = document.getElementById(`edit-libro-${id}`);
             form.style.display = form.style.display === 'block' ? 'none' : 'block';
@@ -371,6 +267,100 @@
             form.style.display = form.style.display === 'block' ? 'none' : 'block';
         }
 
+        // Peticiones fetch para crear, actualizar o eliminar registros en el servidor
+        async function crearLibro(e) {
+            e.preventDefault();
+            const titulo = document.getElementById('nuevo-titulo').value;
+            const autor = document.getElementById('nuevo-autor').value;
+            const isbn = document.getElementById('nuevo-isbn').value;
+            const descripcion = document.getElementById('nuevo-desc').value;
+            const cantidad_total = document.getElementById('nuevo-stock').value;
+
+            const res = await fetch('/api/admin/libro/crear', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ titulo, autor, isbn, descripcion, cantidad_total })
+            });
+            const r = await res.json();
+            alert(r.message);
+            if (r.success) cargarDatosAdmin();
+        }
+
+        async function actualizarLibro(id_libro) {
+            const titulo = document.getElementById(`edit-t-${id_libro}`).value;
+            const autor = document.getElementById(`edit-a-${id_libro}`).value;
+            const isbn = document.getElementById(`edit-isbn-${id_libro}`).value;
+            const descripcion = document.getElementById(`edit-d-${id_libro}`).value;
+            const cantidad_total = document.getElementById(`edit-ct-${id_libro}`).value;
+            const disponibles = document.getElementById(`edit-disp-${id_libro}`).value;
+
+            const res = await fetch('/api/admin/libro/actualizar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_libro, titulo, autor, isbn, descripcion, cantidad_total, disponibles })
+            });
+            const r = await res.json();
+            alert(r.message);
+            if (r.success) cargarDatosAdmin();
+        }
+
+        async function eliminarLibro(id_libro) {
+            if (!confirm('¿Estás seguro de eliminar este libro?')) return;
+            const res = await fetch('/api/admin/libro/eliminar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_libro })
+            });
+            const r = await res.json();
+            alert(r.message);
+            if (r.success) cargarDatosAdmin();
+        }
+
+        async function actualizarUsuario(boleta) {
+            const nombre = document.getElementById(`eu-nombre-${boleta}`).value;
+            const sexo = document.getElementById(`eu-sexo-${boleta}`).value;
+            const unidad_de_procedencia = document.getElementById(`eu-unidad-${boleta}`).value;
+            const email = document.getElementById(`eu-email-${boleta}`).value;
+            const rol = document.getElementById(`eu-rol-${boleta}`).value;
+
+            const res = await fetch('/api/admin/usuario/actualizar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ boleta, nombre, sexo, unidad_de_procedencia, email, rol })
+            });
+            const r = await res.json();
+            alert(r.message);
+            if (r.success) cargarDatosAdmin();
+        }
+
+        async function eliminarUsuario(boleta) {
+            if (!confirm('¿Estás seguro de eliminar este usuario?')) return;
+            const res = await fetch('/api/admin/usuario/eliminar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ boleta })
+            });
+            const r = await res.json();
+            alert(r.message);
+            if (r.success) cargarDatosAdmin();
+        }
+
+        async function actualizarVisita(id_visita) {
+            const tipo_entrega = document.getElementById(`v-entrega-${id_visita}`).value;
+            const observaciones = document.getElementById(`v-obs-${id_visita}`).value;
+            const sancion = document.getElementById(`v-sancion-${id_visita}`).value;
+
+            const res = await fetch('/api/admin/visita/actualizar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_visita, tipo_entrega, observaciones, sancion })
+            });
+            const r = await res.json();
+            alert(r.message);
+            if (r.success) cargarDatosAdmin();
+        }
+
+        // Ejecutar la carga inicial de datos al abrir el panel
         cargarDatosAdmin();
     </script>
 </body>

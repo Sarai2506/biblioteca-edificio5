@@ -2,21 +2,45 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registro Biblioteca IPN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Alumno - Biblioteca IPN</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="container">
-        <form action="/register" method="POST">
-            <h2>Registro de Alumno</h2>
-            <input name="boleta" placeholder="Boleta (Ej. 2025302430)" required>
-            <input name="nombre" placeholder="Nombre completo" required>
-            <input name="sexo" placeholder="Sexo (M/F)" required>
-            <input name="unidad_de_procedencia" placeholder="Unidad (Ej. ESIME Zacatenco)" required>
-            <input name="email" type="email" placeholder="Correo (@alumno.ipn.mx)" required>
-            <input name="password" type="password" placeholder="Contraseña" required>
-            <button type="submit">Registrarse</button>
-            <p><a href="/">Volver al Login</a></p>
+    <div class="container" style="max-width: 450px; text-align: center;">
+        
+        <form action="/register" method="POST" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+            
+            <span class="user-badge" style="background-color: #6f1d1b; color: white; padding: 4px 10px; border-radius: 15px; font-size: 11px; font-weight: bold; display: inline-block; margin-bottom: 8px;">ESIME ZACATENCO</span>
+            <h2 style="color: #1b263b; margin-bottom: 5px;">Registro de Alumno</h2>
+            <p style="margin-bottom: 20px; color: #555; font-size: 13px;">Crea tu cuenta de acceso rápido con tu número de boleta.</p>
+            
+            <!-- Campo de entrada para el número de boleta -->
+            <div class="form-group" style="width: 100%; max-width: 320px; margin-bottom: 12px;">
+                <input type="text" name="boleta" placeholder="Boleta (Ej. 2026360000)" required style="width: 100%; padding: 8px; border: 1px solid #94a3b8; border-radius: 4px; font-size: 12px; text-align: center;">
+            </div>
+
+            <!-- Campo de entrada para el nombre completo del alumno -->
+            <div class="form-group" style="width: 100%; max-width: 320px; margin-bottom: 12px;">
+                <input type="text" name="nombre" placeholder="Nombre completo" required style="width: 100%; padding: 8px; border: 1px solid #94a3b8; border-radius: 4px; font-size: 12px; text-align: center;">
+            </div>
+
+            <!-- Campo de entrada para el género (M/F) -->
+            <div class="form-group" style="width: 100%; max-width: 320px; margin-bottom: 12px;">
+                <input type="text" name="sexo" placeholder="Sexo (M/F)" required style="width: 100%; padding: 8px; border: 1px solid #94a3b8; border-radius: 4px; font-size: 12px; text-align: center;">
+            </div>
+
+            <!-- Campo de entrada para la unidad de procedencia o escuela -->
+            <div class="form-group" style="width: 100%; max-width: 320px; margin-bottom: 15px;">
+                <input type="text" name="unidad_de_procedencia" placeholder="Unidad (Ej. ESIME Zacatenco)" required style="width: 100%; padding: 8px; border: 1px solid #94a3b8; border-radius: 4px; font-size: 12px; text-align: center;">
+            </div>
+
+            <!-- Botón principal de envío -->
+            <button type="submit" class="btn-enviar" style="width: 100%; max-width: 320px; padding: 10px; background-color: #1e3a8a; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Registrarse</button>
+            
+            <p class="footer-link" style="margin-top: 15px; font-size: 12px;">
+                <a href="/" style="color: #2b6cb0; text-decoration: none; font-weight: bold;">← Volver al Login</a>
+            </p>
         </form>
     </div>
 </body>

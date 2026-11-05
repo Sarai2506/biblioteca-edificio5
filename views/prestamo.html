@@ -2,109 +2,127 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Mis Préstamos, Adeudos y Devolución en Línea</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Préstamos Activos - Biblioteca Edificio 5</title>
+    <!-- Vinculación estricta al archivo de estilos unificado -->
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <div class="container" style="max-width: 700px; text-align: left;">
-        <h2>Gestión de Préstamos y Adeudos en Línea</h2>
-        <p id="info-alumno" style="margin-bottom: 15px; color: #555;"></p>
-
-        <div style="max-height: 400px; overflow-y: auto;" id="lista-prestamos">
-            <p style="text-align: center; color: #777;">Cargando información...</p>
+        
+        <span class="user-badge" style="background-color: #00796b; color: white; padding: 4px 10px; border-radius: 15px; font-size: 11px; font-weight: bold; display: inline-block; margin-bottom: 8px;">ESIME ZACATENCO</span>
+        <h2 style="color: #1b263b; margin-bottom: 5px;">Préstamos Activos y Devoluciones</h2>
+        <p id="info-sesion" style="margin-bottom: 15px; color: #555; font-size: 13px;">Consultando tus libros en posesión...</p>
+        
+        <!-- Contenedor de préstamos -->
+        <div id="lista-prestamos" style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; padding-right: 5px; margin-bottom: 20px;">
+            <p style="text-align: center; color: #64748b; font-size: 13px;">Cargando préstamos...</p>
         </div>
 
-        <br>
-        <a id="btn-volver" href="#" style="font-weight: bold; color: #1b263b;">← Volver al Menú Principal</a>
+        <!-- Enlace de retorno al menú -->
+        <div style="text-align: center; margin-top: 20px;">
+            <a id="link-menu" href="#" style="font-weight: bold; color: #2b6cb0; text-decoration: none; font-size: 12px;">← Volver al Menú Principal</a>
+        </div>
     </div>
 
     <script>
+        // Extracción de parámetros de sesión desde la URL
         const params = new URLSearchParams(window.location.search);
-        const boleta = params.get('boleta');
-        const nombre = params.get('nombre');
-        
-        document.getElementById('info-alumno').innerText = `Alumno: ${nombre} (Boleta: ${boleta})`;
-        document.getElementById('btn-volver').href = `/menu?boleta=${boleta}&nombre=${encodeURIComponent(nombre)}`;
+        const boleta = params.get('boleta') || '';
+        const nombre = params.get('nombre') || 'Alumno';
 
-        async function cargarPrestamos() {
-            const res = await fetch(`/api/prestamos/${boleta}`);
-            const prestamos = await res.json();
-
-            const contenedor = document.getElementById('lista-prestamos');
-            contenedor.innerHTML = '';
-
-            if (prestamos.length === 0) {
-                contenedor.innerHTML = '<p style="text-align: center; color: #00796b; font-weight: bold;">No tienes préstamos activos ni adeudos pendientes en este momento.</p>';
-                return;
-            }
-
-            prestamos.forEach(p => {
-                const item = document.createElement('div');
-                const esRetrasado = p.estatus === 'retrasado';
-
-                item.style.cssText = `padding: 15px; border: 1px solid ${esRetrasado ? '#d90429' : '#cbd5e1'}; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; background: ${esRetrasado ? '#fff5f5' : '#f8fafc'};`;
-                
-                let accionesHtml = '';
-                if (!esRetrasado) {
-                    accionesHtml = `
-                        <div style="display: flex; gap: 5px;">
-                            <button onclick="renovarPrestamo(${p.id_prestamo})" style="padding: 6px 10px; font-size: 11px; margin: 0; width: auto; background-color: #2b6cb0;">Renovar</button>
-                            <button onclick="devolverLibro(${p.id_prestamo}, ${p.id_libro})" style="padding: 6px 10px; font-size: 11px; margin: 0; width: auto; background-color: #00796b;">Devolver</button>
-                        </div>
-                    `;
-                } else {
-                    accionesHtml = `
-                        <button onclick="devolverLibro(${p.id_prestamo}, ${p.id_libro})" style="padding: 6px 10px; font-size: 11px; margin: 0; width: auto; background-color: #d90429;">Devolver (Castigo)</button>
-                    `;
-                }
-
-                let colorEstatus = esRetrasado ? '#b7094c' : '#00796b';
-
-                item.innerHTML = `
-                    <div>
-                        <strong style="font-size: 15px; color: #1b263b;">📖 ${p.titulo}</strong><br>
-                        <span style="font-size: 13px; color: #555;">Autor: ${p.autor}</span><br>
-                        <span style="font-size: 12px; color: #666;">Fecha límite de entrega: ${p.fecha_devolucion.split('T')[0]}</span><br>
-                        <span style="font-size: 12px; font-weight: bold; color: ${colorEstatus};">Estatus: ${p.estatus.toUpperCase()} ${esRetrasado ? '(VENCIDO: Castigo activo tras los 30 días)' : ''}</span>
-                    </div>
-                    <div>${accionesHtml}</div>
-                `;
-                contenedor.appendChild(item);
-            });
+        if (!boleta) {
+            alert('Sesión no detectada. Redirigiendo al login...');
+            window.location.href = '/';
         }
 
-        async function renovarPrestamo(id_prestamo) {
-            if (!confirm('¿Deseas extender el préstamo por 30 días adicionales?')) return;
+        // Configurar enlace de retorno conservando la sesión
+        document.getElementById('link-menu').href = `/menu?boleta=${boleta}&nombre=${encodeURIComponent(nombre)}`;
+        document.getElementById('info-sesion').innerText = `Usuario activo: ${nombre} (Boleta: ${boleta})`;
 
-            const response = await fetch('/api/prestamo/renovar', {
+        // Función para cargar los préstamos activos del alumno
+        function cargarPrestamos() {
+            fetch(`/api/prestamos/${boleta}`)
+                .then(res => res.json())
+                .then(prestamos => {
+                    const contenedor = document.getElementById('lista-prestamos');
+                    contenedor.innerHTML = '';
+
+                    if (!prestamos || prestamos.length === 0) {
+                        contenedor.innerHTML = '<p style="text-align: center; color: #64748b; font-size: 13px;">No tienes préstamos activos en este momento.</p>';
+                        return;
+                    }
+
+                    prestamos.forEach(p => {
+                        const div = document.createElement('div');
+                        div.style.cssText = 'padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; background-color: #f8fafc; display: flex; justify-content: space-between; align-items: center; font-size: 12px;';
+                        
+                        // Formatear fechas de forma legible
+                        const fechaDev = p.fecha_devolucion ? new Date(p.fecha_devolucion).toLocaleDateString() : 'N/D';
+
+                        div.innerHTML = `
+                            <div>
+                                <strong style="color: #1b263b; font-size: 13px;">${p.titulo}</strong><br>
+                                <span style="color: #475569;">Autor: ${p.autor}</span><br>
+                                <span style="color: #b45309;">Devolución límite: <strong>${fechaDev}</strong></span><br>
+                                <span style="color: #00796b; font-weight: bold; text-transform: uppercase;">Estatus: ${p.estatus}</span>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <button onclick="renovarPrestamo(${p.id_prestamo})" style="padding: 6px 10px; background-color: #2b6cb0; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px;">
+                                    Renovar (30 días)
+                                </button>
+                                <button onclick="devolverLibro(${p.id_prestamo}, ${p.id_libro})" style="padding: 6px 10px; background-color: #00796b; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px;">
+                                    Devolver Libro
+                                </button>
+                            </div>
+                        `;
+                        contenedor.appendChild(div);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error al cargar préstamos:', err);
+                });
+        }
+
+        // Función para renovar el préstamo
+        function renovarPrestamo(id_prestamo) {
+            if (!confirm('¿Deseas extender el plazo de este préstamo por 30 días adicionales?')) return;
+
+            fetch('/api/prestamo/renovar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_prestamo })
-            });
-
-            const result = await response.json();
-            alert(result.message);
-            if (result.success) {
-                cargarPrestamos();
-            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    cargarPrestamos();
+                }
+            })
+            .catch(err => console.error('Error:', err));
         }
 
-        async function devolverLibro(id_prestamo, id_libro) {
-            if (!confirm('¿Deseas registrar la devolución en línea de este libro?')) return;
+        // Función para registrar la devolución del libro
+        function devolverLibro(id_prestamo, id_libro) {
+            if (!confirm('¿Confirmas la entrega y devolución física de este libro a la biblioteca?')) return;
 
-            const response = await fetch('/api/prestamo/devolver', {
+            fetch('/api/prestamo/devolver', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_prestamo, id_libro })
-            });
-
-            const result = await response.json();
-            alert(result.message);
-            if (result.success) {
-                cargarPrestamos();
-            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    cargarPrestamos();
+                }
+            })
+            .catch(err => console.error('Error:', err));
         }
 
+        // Cargar los datos al iniciar
         cargarPrestamos();
     </script>
 </body>

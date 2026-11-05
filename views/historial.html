@@ -2,55 +2,83 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Historial de Libros Entregados</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Préstamos - Biblioteca Edificio 5</title>
+    <!-- Vinculación estricta al archivo de estilos unificado -->
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="container" style="max-width: 650px; text-align: left;">
-        <h2>Historial de Devoluciones</h2>
-        <p id="info-alumno" style="margin-bottom: 15px; color: #555;"></p>
-
-        <div style="max-height: 380px; overflow-y: auto;" id="lista-historial">
-            <p style="text-align: center; color: #777;">Cargando historial...</p>
+    <div class="container" style="max-width: 700px; text-align: left;">
+        
+        <span class="user-badge" style="background-color: #2b6cb0; color: white; padding: 4px 10px; border-radius: 15px; font-size: 11px; font-weight: bold; display: inline-block; margin-bottom: 8px;">ESIME ZACATENCO</span>
+        <h2 style="color: #1b263b; margin-bottom: 5px;">Historial de Préstamos</h2>
+        <p id="info-sesion" style="margin-bottom: 15px; color: #555; font-size: 13px;">Consultando registros de libros entregados...</p>
+        
+        <!-- Contenedor del historial -->
+        <div id="lista-historial" style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; padding-right: 5px; margin-bottom: 20px;">
+            <p style="text-align: center; color: #64748b; font-size: 13px;">Cargando historial...</p>
         </div>
 
-        <br>
-        <a id="btn-volver" href="#" style="font-weight: bold; color: #1b263b;">← Volver al Menú Principal</a>
+        <!-- Enlace de retorno al menú -->
+        <div style="text-align: center; margin-top: 20px;">
+            <a id="link-menu" href="#" style="font-weight: bold; color: #2b6cb0; text-decoration: none; font-size: 12px;">← Volver al Menú Principal</a>
+        </div>
     </div>
 
     <script>
+        // Extracción de parámetros de sesión desde la URL
         const params = new URLSearchParams(window.location.search);
-        const boleta = params.get('boleta');
-        const nombre = params.get('nombre');
-        
-        document.getElementById('info-alumno').innerText = `Alumno: ${nombre} (Boleta: ${boleta})`;
-        document.getElementById('btn-volver').href = `/menu?boleta=${boleta}&nombre=${encodeURIComponent(nombre)}`;
+        const boleta = params.get('boleta') || '';
+        const nombre = params.get('nombre') || 'Alumno';
 
-        async function cargarHistorial() {
-            const res = await fetch(`/api/historial/${boleta}`);
-            const historial = await res.json();
-
-            const contenedor = document.getElementById('lista-historial');
-            contenedor.innerHTML = '';
-
-            if (historial.length === 0) {
-                contenedor.innerHTML = '<p style="text-align: center; color: #555; font-weight: bold;">No tienes registros de libros entregados previamente.</p>';
-                return;
-            }
-
-            historial.forEach(h => {
-                const item = document.createElement('div');
-                item.style.cssText = 'padding: 12px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 10px; background: #f9f9f9;';
-                item.innerHTML = `
-                    <strong>📚 ${h.titulo}</strong><br>
-                    <span style="font-size: 13px; color: #555;">Autor: ${h.autor}</span><br>
-                    <span style="font-size: 12px; color: #666;">Prestado el: ${h.fecha_prestamo.split('T')[0]} | Entregado a tiempo</span><br>
-                    <span style="font-size: 12px; color: green; font-weight: bold;">Estatus: ENTREGADO</span>
-                `;
-                contenedor.appendChild(item);
-            });
+        if (!boleta) {
+            alert('Sesión no detectada. Redirigiendo al login...');
+            window.location.href = '/';
         }
 
+        // Configurar enlace de retorno conservando la sesión
+        document.getElementById('link-menu').href = `/menu?boleta=${boleta}&nombre=${encodeURIComponent(nombre)}`;
+        document.getElementById('info-sesion').innerText = `Usuario activo: ${nombre} (Boleta: ${boleta})`;
+
+        // Función para cargar el historial de libros entregados del alumno
+        function cargarHistorial() {
+            fetch(`/api/historial/${boleta}`)
+                .then(res => res.json())
+                .then(historial => {
+                    const contenedor = document.getElementById('lista-historial');
+                    contenedor.innerHTML = '';
+
+                    if (!historial || historial.length === 0) {
+                        contenedor.innerHTML = '<p style="text-align: center; color: #64748b; font-size: 13px;">No cuentas con un historial de préstamos anteriores.</p>';
+                        return;
+                    }
+
+                    historial.forEach(h => {
+                        const div = document.createElement('div');
+                        div.style.cssText = 'padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; background-color: #f8fafc; display: flex; justify-content: space-between; align-items: center; font-size: 12px;';
+                        
+                        const fechaPrestamo = h.fecha_prestamo ? new Date(h.fecha_prestamo).toLocaleDateString() : 'N/D';
+                        const fechaDevolucion = h.fecha_devolucion ? new Date(h.fecha_devolucion).toLocaleDateString() : 'N/D';
+
+                        div.innerHTML = `
+                            <div>
+                                <strong style="color: #1b263b; font-size: 13px;">${h.titulo}</strong><br>
+                                <span style="color: #475569;">Autor: ${h.autor}</span><br>
+                                <span style="color: #64748b;">Préstamo: ${fechaPrestamo} | Devolución: ${fechaDevolucion}</span>
+                            </div>
+                            <span style="color: #00796b; font-weight: bold; text-transform: uppercase; background-color: #e2e8f0; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
+                                ${h.estatus}
+                            </span>
+                        `;
+                        contenedor.appendChild(div);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error al cargar el historial:', err);
+                });
+        }
+
+        // Cargar datos al iniciar
         cargarHistorial();
     </script>
 </body>

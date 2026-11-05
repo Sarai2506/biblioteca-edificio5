@@ -2,97 +2,113 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Catálogo Bibliográfico</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Libros - Biblioteca Edificio 5</title>
+    <!-- Vinculación con la hoja de estilos unificada -->
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <div class="container" style="max-width: 700px; text-align: left;">
-        <h2>Catálogo de Libros - Edificio 5</h2>
-        <input type="text" id="busqueda" placeholder="Buscar por título, autor o ISBN..." onkeyup="buscarLibros()">
         
-        <div style="max-height: 420px; overflow-y: auto; margin-top: 15px;" id="resultados">
-            <p style="text-align: center; color: #777;">Escribe para buscar material...</p>
+        <span class="user-badge" style="background-color: #1b263b; color: white; padding: 4px 10px; border-radius: 15px; font-size: 11px; font-weight: bold; display: inline-block; margin-bottom: 8px;">ESIME ZACATENCO</span>
+        <h2 style="color: #1b263b; margin-bottom: 5px;">Catálogo de Libros</h2>
+        <p id="info-sesion" style="margin-bottom: 15px; color: #555; font-size: 13px;">Buscando libros disponibles en el acervo...</p>
+        
+        <!-- Barra de búsqueda rápida -->
+        <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+            <input type="text" id="input-busqueda" placeholder="Buscar por título, autor o ISBN..." style="flex: 1; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px;">
+            <button onclick="buscarLibros()" style="padding: 8px 15px; background-color: #1e3a8a; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px;">Buscar</button>
         </div>
 
-        <br>
-        <a id="btn-volver" href="#" style="font-weight: bold; color: #1b263b;">← Volver al Menú Principal</a>
+        <!-- Contenedor de la lista de libros -->
+        <div id="lista-libros" style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; padding-right: 5px;">
+            <p style="text-align: center; color: #64748b; font-size: 13px;">Cargando catálogo...</p>
+        </div>
+
+        <!-- Enlace de retorno -->
+        <div style="text-align: center; margin-top: 20px;">
+            <a id="link-menu" href="#" style="font-weight: bold; color: #2b6cb0; text-decoration: none; font-size: 12px;">← Volver al Menú Principal</a>
+        </div>
     </div>
 
     <script>
+        // Extracción de parámetros de sesión desde la URL
         const params = new URLSearchParams(window.location.search);
-        const boleta = params.get('boleta');
-        const nombre = params.get('nombre');
-        document.getElementById('btn-volver').href = `/menu?boleta=${boleta}&nombre=${encodeURIComponent(nombre)}`;
+        const boleta = params.get('boleta') || '';
+        const nombre = params.get('nombre') || 'Alumno';
 
-        async function buscarLibros() {
-            const query = document.getElementById('busqueda').value;
-            const res = await fetch(`/api/libros?q=${query}`);
-            const libros = await res.json();
-
-            const contenedor = document.getElementById('resultados');
-            contenedor.innerHTML = '';
-
-            if (libros.length === 0) {
-                contenedor.innerHTML = '<p style="text-align: center; color: #777;">No se encontraron libros.</p>';
-                return;
-            }
-
-            libros.forEach(libro => {
-                const item = document.createElement('div');
-                item.style.cssText = 'padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; background: #fafafa;';
-                
-                let seccionPrestamo = '';
-                if (libro.disponibles > 0) {
-                    seccionPrestamo = `
-                        <div style="margin-top: 10px; border-top: 1px dashed #ccc; padding-top: 10px; display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-size: 11px; color: #555;">Plazo automático: 30 días</span>
-                            <button onclick="solicitarPrestamo(${libro.id_libro})" style="padding: 8px 14px; font-size: 13px; margin: 0; width: auto; background-color: #00796b;">Solicitar Préstamo</button>
-                        </div>
-                    `;
-                } else {
-                    seccionPrestamo = `<p style="color: red; font-size: 12px; font-weight: bold; margin-top: 8px;">Agotado temporalmente</p>`;
-                }
-
-                item.innerHTML = `
-                    <div style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="toggleDetalles(${libro.id_libro})">
-                        <div>
-                            <strong style="font-size: 15px; color: #1b263b;">📖 ${libro.titulo}</strong><br>
-                            <span style="color: #555; font-size: 13px;">Autor: ${libro.autor} | <em>Haz clic para ver detalles</em></span>
-                        </div>
-                        <span style="color: #00796b; font-size: 12px; font-weight: bold;">Disponibles: ${libro.disponibles}/${libro.cantidad_total}</span>
-                    </div>
-
-                    <div id="detalles-${libro.id_libro}" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 13px; color: #444;">
-                        <p><strong>ISBN:</strong> ${libro.isbn || 'No disponible'}</p>
-                        <p style="margin: 5px 0;"><strong>Descripción:</strong> ${libro.descripcion || 'Sin descripción detallada.'}</p>
-                        ${seccionPrestamo}
-                    </div>
-                `;
-                contenedor.appendChild(item);
-            });
+        if (!boleta) {
+            alert('Sesión no detectada. Redirigiendo al login...');
+            window.location.href = '/';
         }
 
-        function toggleDetalles(id) {
-            const div = document.getElementById(`detalles-${id}`);
-            div.style.display = div.style.display === 'none' ? 'block' : 'none';
+        // Configurar el enlace de retorno al menú conservando la sesión
+        document.getElementById('link-menu').href = `/menu?boleta=${boleta}&nombre=${encodeURIComponent(nombre)}`;
+        document.getElementById('info-sesion').innerText = `Usuario activo: ${nombre} (Boleta: ${boleta})`;
+
+        // Función para consultar libros al servidor
+        function buscarLibros() {
+            const query = document.getElementById('input-busqueda').value;
+            fetch(`/api/libros?q=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(libros => {
+                    const contenedor = document.getElementById('lista-libros');
+                    contenedor.innerHTML = '';
+
+                    if (!libros || libros.length === 0) {
+                        contenedor.innerHTML = '<p style="text-align: center; color: #64748b; font-size: 13px;">No se encontraron libros disponibles.</p>';
+                        return;
+                    }
+
+                    libros.forEach(libro => {
+                        const div = document.createElement('div');
+                        div.style.cssText = 'padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; background-color: #f8fafc; display: flex; justify-content: space-between; align-items: center; font-size: 12px;';
+                        
+                        div.innerHTML = `
+                            <div>
+                                <strong style="color: #1b263b; font-size: 13px;">${libro.titulo}</strong><br>
+                                <span style="color: #475569;">Autor: ${libro.autor} | ISBN: ${libro.isbn}</span><br>
+                                <span style="color: ${libro.disponibles > 0 ? '#00796b' : '#d90429'}; font-weight: bold;">
+                                    Disponibles: ${libro.disponibles} de ${libro.cantidad_total || libro.disponibles}
+                                </span>
+                            </div>
+                            <button onclick="solicitarPrestamo(${libro.id_libro})" 
+                                style="padding: 6px 12px; background-color: ${libro.disponibles > 0 ? '#1e3a8a' : '#94a3b8'}; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: ${libro.disponibles > 0 ? 'pointer' : 'not-allowed'};"
+                                ${libro.disponibles > 0 ? '' : 'disabled'}>
+                                Solicitar Préstamo
+                            </button>
+                        `;
+                        contenedor.appendChild(div);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error al cargar libros:', err);
+                });
         }
 
-        async function solicitarPrestamo(id_libro) {
-            if (!confirm('¿Deseas solicitar el préstamo de este libro por un periodo de 30 días?')) return;
+        // Función para solicitar el préstamo de un libro
+        function solicitarPrestamo(id_libro) {
+            if (!confirm('¿Deseas solicitar este libro por un plazo de 30 días?')) return;
 
-            const response = await fetch('/api/prestamo/solicitar', {
+            fetch('/api/prestamo/solicitar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ boleta, id_libro })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    buscarLibros(); // Recargar catálogo para actualizar existencias
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                alert('Ocurrió un error al procesar la solicitud.');
             });
-
-            const result = await response.json();
-            alert(result.message);
-            if (result.success) {
-                buscarLibros();
-            }
         }
 
+        // Cargar el catálogo completo al iniciar la vista
         buscarLibros();
     </script>
 </body>

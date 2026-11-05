@@ -1,105 +1,252 @@
-/* Estilos Globales Responsivos para la Biblioteca IPN */
+/* Reset global de márgenes y caja para consistencia visual */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+/* Configuración básica del cuerpo y fondo de pantalla */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f6f9;
-    color: #333;
+    font-family: Arial, sans-serif;
+    background-color: #cbd5e1;
+    margin: 0;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 15px;
 }
 
-/* Contenedor fluido que se adapta a cualquier pantalla */
+/* Contenedor principal centrado de la hoja de registro */
 .container {
     width: 100%;
-    max-width: 800px;
-    background: #ffffff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    max-width: 950px;
+    background-color: #ffffff;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+}
+
+/* Encabezado superior alineado en flexbox para escudos institucionales */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Estructura del lado izquierdo del encabezado (IPN) */
+.header-content-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     text-align: left;
 }
 
-/* Títulos y textos adaptativos */
-h1, h2, h3 {
-    color: #1b263b;
-    margin-bottom: 15px;
-    word-break: break-word;
+/* Estructura del lado derecho del encabezado (ESIME SEPI) */
+.header-content-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: right;
 }
 
-p {
-    font-size: 14px;
-    color: #555;
-    line-height: 1.5;
-    margin-bottom: 15px;
+/* Dimensionamiento proporcional para los logotipos oficiales */
+.logo-img {
+    height: 55px;
+    width: auto;
+    object-fit: contain;
 }
 
-/* Elementos de formulario responsivos */
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="number"],
-input[type="date"],
-textarea,
-select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    font-size: 14px;
-}
-
-/* Botones adaptativos */
-button, input[type="submit"] {
-    width: 100%;
-    background-color: #1b263b;
-    color: white;
-    padding: 11px;
-    border: none;
-    border-radius: 6px;
+/* Tipografía del nombre de la institución */
+.institution {
     font-size: 14px;
     font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
+    color: #000000;
+}
+
+/* Estilo del lema institucional */
+.slogan {
+    font-style: italic;
+    color: #555555;
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+/* Tipografía de la unidad académica */
+.school {
+    font-size: 13px;
+    font-weight: bold;
+    color: #000000;
+}
+
+/* Estilo para la sección de posgrado */
+.section {
+    color: #444444;
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+/* Banner superior con degradado azul */
+.banner {
+    background: linear-gradient(to bottom, #1e40af, #3b82f6);
+    color: #ffffff;
+    padding: 12px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: normal;
+    border-radius: 4px;
     margin-top: 5px;
 }
 
-button:hover, input[type="submit"]:hover {
-    background-color: #0d1b2a;
+/* Cuadrícula de dos columnas paralelas para los formularios */
+.content-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
 }
 
-/* Enlaces limpios */
-a {
-    color: #00796b;
+/* Caja de módulo individual para cada tipo de usuario */
+.column-box {
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: #f8fafc;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Cabecera guinda estilo IPN para los títulos de columna */
+.column-header {
+    background-color: #9d174d;
+    color: #ffffff;
+    text-align: center;
+    padding: 8px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+/* Cuerpo interno del formulario centrado verticalmente */
+.column-body {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+}
+
+/* Agrupación estándar de etiquetas e inputs */
+.form-group {
+    width: 100%;
+    max-width: 250px;
+    margin-bottom: 12px;
+    text-align: center;
+    font-size: 11px;
+    color: #333333;
+}
+
+/* Etiquetas del formulario */
+.form-group label {
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Estilos para cajas de texto y listas desplegables */
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="email"],
+.form-group select {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #94a3b8;
+    border-radius: 4px;
+    font-size: 12px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Agrupación alineada a la izquierda para checkboxes y radios */
+.options-group {
+    width: 100%;
+    max-width: 220px;
+    text-align: left;
+    margin-bottom: 12px;
+    font-size: 11px;
+    color: #444444;
+}
+
+/* Etiquetas interactivas de opciones múltiples */
+.options-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+/* Alineación de selectores checkbox y radio */
+.options-group input[type="checkbox"],
+.options-group input[type="radio"] {
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+/* Botón principal de envío azul marino */
+.btn-enviar {
+    background-color: #1e3a8a;
+    color: #ffffff;
+    border: none;
+    padding: 8px 24px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: auto;
+    margin-bottom: 10px;
+    transition: background-color 0.2s ease;
+}
+
+/* Efecto hover para el botón de envío */
+.btn-enviar:hover {
+    background-color: #172554;
+}
+
+/* Enlaces del pie de página */
+.footer-link {
+    margin-top: 15px;
+    font-size: 11px;
+    color: #475569;
+    text-align: left;
+    padding-left: 5px;
+}
+
+/* Formato de hipervínculos del pie */
+.footer-link a {
+    color: #475569;
     text-decoration: none;
-    font-size: 13px;
 }
 
-a:hover {
+/* Efecto hover en los enlaces del pie */
+.footer-link a:hover {
     text-decoration: underline;
 }
 
-/* Media Queries para pantallas muy pequeñas (Móviles) */
-@media (max-width: 480px) {
-    .container {
-        padding: 15px;
-        margin: 5px;
+/* Adaptación responsiva para teléfonos y pantallas pequeñas */
+@media (max-width: 768px) {
+    .content-columns {
+        grid-template-columns: 1fr;
     }
 
-    h2 {
-        font-size: 18px;
+    .header {
+        flex-direction: column;
+        text-align: center;
     }
 
-    button, input[type="submit"] {
-        padding: 10px;
-        font-size: 13px;
+    .header-content-left, .header-content-right {
+        justify-content: center;
+        text-align: center;
     }
 }

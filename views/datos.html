@@ -3,212 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obtención de Datos y Constancias - Biblioteca IPN</title>
+    <title>Constancias y Carta de No Adeudo - Biblioteca Edificio 5</title>
+    <!-- Vinculación estricta al archivo de estilos unificado -->
     <link rel="stylesheet" href="/css/style.css">
-    <style>
-        .data-card {
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .data-card h3 {
-            color: #1b263b;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-        .date-inputs {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
-        }
-        .date-group {
-            flex: 1;
-            min-width: 140px;
-        }
-        .date-group label {
-            font-size: 11px;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 3px;
-        }
-    </style>
 </head>
 <body>
     <div class="container" style="max-width: 700px; text-align: left;">
-        <h2>Obtención de Datos y Constancias</h2>
-        <p id="info-alumno" style="margin-bottom: 20px; color: #555;"></p>
+        
+        <span class="user-badge" style="background-color: #475569; color: white; padding: 4px 10px; border-radius: 15px; font-size: 11px; font-weight: bold; display: inline-block; margin-bottom: 8px;">ESIME ZACATENCO</span>
+        <h2 style="color: #1b263b; margin-bottom: 5px;">Constancias y Carta de No Adeudo</h2>
+        <p id="info-sesion" style="margin-bottom: 20px; color: #555; font-size: 13px;">Genera tus documentos oficiales y consulta movimientos por rango de fechas.</p>
+        
+        <!-- Sección 1: Carta de No Adeudo -->
+        <div style="padding: 15px; border: 1px solid #cbd5e1; border-radius: 6px; background-color: #f8fafc; margin-bottom: 20px;">
+            <h3 style="color: #1b263b; font-size: 14px; margin-bottom: 8px;">Carta de No Adeudo</h3>
+            <p style="color: #475569; font-size: 12px; margin-bottom: 12px;">Verifica tu estatus y genera tu documento oficial libre de adeudos o sanciones en la biblioteca.</p>
+            <button onclick="generarCartaNoAdeudo()" style="padding: 8px 15px; background-color: #1e3a8a; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px;">
+                Generar Carta de No Adeudo
+            </button>
+            <div id="resultado-carta" style="margin-top: 12px; font-size: 12px;"></div>
+        </div>
 
-        <!-- Apartado 1: Historial General de Movimientos por Rango de Fechas -->
-        <div class="data-card">
-            <h3 style="color: #2b6cb0;">📊 Historial General de Movimientos (PDF por Fechas)</h3>
-            <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Selecciona un rango de fechas para consultar todos los préstamos y devoluciones realizadas en ese periodo.</p>
-            
-            <div class="date-inputs">
-                <div class="date-group">
-                    <label>Fecha de Inicio:</label>
-                    <input type="date" id="fecha-inicio" style="margin: 0;">
+        <!-- Sección 2: Historial por Rango de Fechas -->
+        <div style="padding: 15px; border: 1px solid #cbd5e1; border-radius: 6px; background-color: #f8fafc; margin-bottom: 20px;">
+            <h3 style="color: #1b263b; font-size: 14px; margin-bottom: 8px;">Movimientos por Rango de Fechas</h3>
+            <div style="display: flex; gap: 8px; margin-bottom: 12px; align-items: center; font-size: 12px;">
+                <div>
+                    <label style="display: block; color: #475569; margin-bottom: 2px;">Inicio:</label>
+                    <input type="date" id="fecha-inicio" style="padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px;">
                 </div>
-                <div class="date-group">
-                    <label>Fecha de Fin:</label>
-                    <input type="date" id="fecha-fin" style="margin: 0;">
+                <div>
+                    <label style="display: block; color: #475569; margin-bottom: 2px;">Fin:</label>
+                    <input type="date" id="fecha-fin" style="padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px;">
                 </div>
+                <button onclick="consultarHistorialFechas()" style="align-self: flex-end; padding: 7px 12px; background-color: #00796b; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px;">
+                    Consultar
+                </button>
             </div>
-            <button onclick="generarPdfHistorial()" style="background-color: #2b6cb0; margin-top: 10px;">🖨️ Imprimir / Guardar Historial (PDF)</button>
+            <div id="resultado-fechas" style="max-height: 200px; overflow-y: auto; font-size: 12px;">
+                <p style="color: #64748b;">Selecciona un rango de fechas para consultar.</p>
+            </div>
         </div>
 
-        <!-- Apartado 2: Carta de No Adeudo -->
-        <div class="data-card" style="border-left: 4px solid #00796b;">
-            <h3 style="color: #00796b;">📜 Carta de No Adeudo Institucional</h3>
-            <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Genera tu constancia oficial de no adeudo con validez para trámites escolares del Edificio 5.</p>
-            <button onclick="obtenerCartaNoAdeudo()" style="background-color: #00796b; margin-top: 5px;">Generar Carta de No Adeudo</button>
+        <!-- Enlace de retorno al menú -->
+        <div style="text-align: center; margin-top: 20px;">
+            <a id="link-menu" href="#" style="font-weight: bold; color: #2b6cb0; text-decoration: none; font-size: 12px;">← Volver al Menú Principal</a>
         </div>
-
-        <br>
-        <a id="btn-volver" href="#" style="font-weight: bold; color: #1b263b;">← Volver al Menú Principal</a>
     </div>
 
     <script>
+        // Extracción de parámetros de sesión desde la URL
         const params = new URLSearchParams(window.location.search);
-        const boleta = params.get('boleta');
-        const nombre = params.get('nombre');
-        
-        document.getElementById('info-alumno').innerText = `Alumno: ${nombre} (Boleta: ${boleta})`;
-        document.getElementById('btn-volver').href = `/menu?boleta=${boleta}&nombre=${encodeURIComponent(nombre)}`;
+        const boleta = params.get('boleta') || '';
+        const nombre = params.get('nombre') || 'Alumno';
 
-        async function generarPdfHistorial() {
+        if (!boleta) {
+            alert('Sesión no detectada. Redirigiendo al login...');
+            window.location.href = '/';
+        }
+
+        // Configurar enlace de retorno conservando la sesión
+        document.getElementById('link-menu').href = `/menu?boleta=${boleta}&nombre=${encodeURIComponent(nombre)}`;
+        document.getElementById('info-sesion').innerText = `Gestión de datos de: ${nombre} (Boleta: ${boleta})`;
+
+        // Función para generar la Carta de No Adeudo
+        function generarCartaNoAdeudo() {
+            const contenedor = document.getElementById('resultado-carta');
+            contenedor.innerHTML = '<span style="color: #64748b;">Verificando estatus...</span>';
+
+            fetch(`/api/alumno/carta-no-adeudo?boleta=${boleta}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success) {
+                        contenedor.innerHTML = `<p style="color: #d90429; font-weight: bold;">${data.message}</p>`;
+                        return;
+                    }
+
+                    contenedor.innerHTML = `
+                        <div style="padding: 12px; border: 1px solid #00796b; border-radius: 4px; background-color: #e6fffa; color: #004d40;">
+                            <strong>✔ ¡Carta de No Adeudo Aprobada!</strong><br>
+                            Emitida el ${data.fechaEmision} para el alumno <strong>${data.alumno.nombre}</strong> con boleta <strong>${data.alumno.boleta}</strong> de la unidad ${data.alumno.unidad_procedencia}.<br>
+                            <em>El alumno no presenta multas, sanciones ni adeudos activos de libros.</em>
+                        </div>
+                    `;
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    contenedor.innerHTML = '<span style="color: #d90429;">Error al generar el documento.</span>';
+                });
+        }
+
+        // Función para consultar movimientos por rango de fechas
+        function consultarHistorialFechas() {
             const inicio = document.getElementById('fecha-inicio').value;
             const fin = document.getElementById('fecha-fin').value;
+            const contenedor = document.getElementById('resultado-fechas');
 
             if (!inicio || !fin) {
-                alert('Por favor selecciona una fecha de inicio y una fecha de fin.');
+                alert('Por favor selecciona ambas fechas.');
                 return;
             }
 
-            try {
-                const res = await fetch(`/api/alumno/historial-fechas?boleta=${boleta}&inicio=${inicio}&fin=${fin}`);
-                const registros = await res.json();
+            contenedor.innerHTML = '<p style="color: #64748b;">Buscando movimientos...</p>';
 
-                if (!registros || registros.length === 0) {
-                    alert('No se encontraron movimientos registrados en el rango de fechas seleccionado.');
-                    return;
-                }
+            fetch(`/api/alumno/historial-fechas?boleta=${boleta}&inicio=${inicio}&fin=${fin}`)
+                .then(res => res.json())
+                .then(movimientos => {
+                    contenedor.innerHTML = '';
 
-                let htmlContenido = `
-                    <div style="font-family: Arial, sans-serif; padding: 30px; color: #333;">
-                        <h2 style="text-align: center; color: #1b263b;">INSTITUTO POLITÉCNICO NACIONAL</h2>
-                        <h3 style="text-align: center; color: #6f1d1b;">ESIME ZACATENCO - BIBLIOTECA EDIFICIO 5</h3>
-                        <hr style="border: 1px solid #1b263b; margin: 20px 0;">
-                        <p><strong>Alumno:</strong> ${nombre}</p>
-                        <p><strong>Número de Boleta:</strong> ${boleta}</p>
-                        <p><strong>Periodo del Reporte:</strong> Del ${inicio} al ${fin}</p>
-                        <br>
-                        <table border="1" cellspacing="0" cellpadding="8" style="width: 100%; border-collapse: collapse; font-size: 12px;">
-                            <thead>
-                                <tr style="background: #f1f5f9;">
-                                    <th>Libro</th>
-                                    <th>Autor</th>
-                                    <th>Fecha de Préstamo</th>
-                                    <th>Fecha Límite / Devolución</th>
-                                    <th>Estatus Actual</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
+                    if (!movimientos || movimientos.length === 0) {
+                        contenedor.innerHTML = '<p style="color: #64748b;">No se encontraron movimientos en este rango de fechas.</p>';
+                        return;
+                    }
 
-                registros.forEach(r => {
-                    let colorEstatus = '#00796b';
-                    if (r.estatus === 'retrasado') colorEstatus = '#d90429';
-                    if (r.estatus === 'pendiente') colorEstatus = '#f59e0b';
-
-                    htmlContenido += `
-                        <tr>
-                            <td>${r.titulo}</td>
-                            <td>${r.autor}</td>
-                            <td>${r.fecha_prestamo ? r.fecha_prestamo.split('T')[0] : 'N/D'}</td>
-                            <td>${r.fecha_devolucion ? r.fecha_devolucion.split('T')[0] : 'N/D'}</td>
-                            <td><strong style="color: ${colorEstatus};">${r.estatus.toUpperCase()}</strong></td>
-                        </tr>
-                    `;
+                    movimientos.forEach(m => {
+                        const div = document.createElement('div');
+                        div.style.cssText = 'padding: 8px; border-bottom: 1px solid #cbd5e1; margin-bottom: 6px;';
+                        const fechaP = m.fecha_prestamo ? new Date(m.fecha_prestamo).toLocaleDateString() : 'N/D';
+                        
+                        div.innerHTML = `
+                            <strong>${m.titulo}</strong> (${m.autor})<br>
+                            <span style="color: #475569;">Fecha: ${fechaP} — Estatus: <strong style="text-transform: uppercase;">${m.estatus}</strong></span>
+                        `;
+                        contenedor.appendChild(div);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    contenedor.innerHTML = '<span style="color: #d90429;">Error al consultar movimientos.</span>';
                 });
-
-                htmlContenido += `
-                            </tbody>
-                        </table>
-                        <br><br>
-                        <p style="text-align: center; font-size: 11px; color: #666;">Este documento es un reporte general de movimientos generado por el sistema de la biblioteca del Edificio 5.</p>
-                    </div>
-                `;
-
-                const ventanaImpresion = window.open('', '_blank');
-                ventanaImpresion.document.write(htmlContenido);
-                ventanaImpresion.document.close();
-                ventanaImpresion.focus();
-                setTimeout(() => { ventanaImpresion.print(); }, 500);
-
-            } catch (e) {
-                console.error(e);
-                alert('Ocurrió un error al generar el reporte.');
-            }
-        }
-
-        async function obtenerCartaNoAdeudo() {
-            try {
-                const res = await fetch(`/api/alumno/carta-no-adeudo?boleta=${boleta}`);
-                const data = await res.json();
-
-                if (!data.success) {
-                    alert(data.message);
-                    return;
-                }
-
-                const alumno = data.alumno;
-                let htmlCarta = `
-                    <div style="font-family: 'Times New Roman', Times, serif; padding: 40px; color: #000; line-height: 1.6;">
-                        <div style="text-align: right; font-size: 13px; margin-bottom: 30px;">
-                            Ciudad de México, a ${data.fechaEmision}
-                        </div>
-                        <h3 style="text-align: center; margin-bottom: 5px;">INSTITUTO POLITÉCNICO NACIONAL</h3>
-                        <h4 style="text-align: center; margin-top: 0; margin-bottom: 30px;">ESCUELA SUPERIOR DE INGENIERÍA MECÁNICA Y ELÉCTRICA<br>UNIDAD ZACATENCO</h4>
-                        
-                        <p style="text-align: right; font-weight: bold; margin-bottom: 40px;">ASUNTO: CARTA DE NO ADEUDO BIBLIOTECARIO.</p>
-                        
-                        <p><strong>A QUIEN CORRESPONDA:</strong></p>
-                        
-                        <p style="text-align: justify; text-indent: 40px; margin-bottom: 20px;">
-                            El que suscribe, responsable del acervo bibliotecario del <strong>Edificio 5</strong> de la ESIME Zacatenco, por medio de la presente 
-                            <strong>HACE CONSTAR</strong> que el (la) alumno(a) <strong>${alumno.nombre}</strong>, inscrito(a) con número de boleta <strong>${alumno.boleta}</strong> 
-                            perteneciente al programa académico de ingeniería, no cuenta con adeudos de libros, materiales bibliográficos, ni sanciones o castigos activos 
-                            registrados en los sistemas de control interno de esta biblioteca.
-                        </p>
-
-                        <p style="text-align: justify; text-indent: 40px; margin-bottom: 60px;">
-                            Se extiende la presente constancia a petición del interesado(a) para los fines y trámites legales o académicos que a su derecho convengan.
-                        </p>
-
-                        <br><br><br>
-                        <div style="text-align: center;">
-                            <div style="display: inline-block; border-top: 1px solid #000; width: 250px; padding-top: 5px;">
-                                <strong>ATENTAMENTE</strong><br>
-                                Coordinación de Biblioteca - Edificio 5<br>
-                                ESIME Zacatenco - IPN
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                const ventanaCarta = window.open('', '_blank');
-                ventanaCarta.document.write(htmlCarta);
-                ventanaCarta.document.close();
-                ventanaCarta.focus();
-                setTimeout(() => { ventanaCarta.print(); }, 500);
-
-            } catch (e) {
-                console.error(e);
-                alert('Ocurrió un error al generar la carta de no adeudo.');
-            }
         }
     </script>
 </body>
