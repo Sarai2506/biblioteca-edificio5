@@ -1,4 +1,4 @@
-require('dotenv').config(); // <-- Agrega esta línea al inicio
+require('dotenv').config(); // Cargamos las variables de entorno del archivo .env para la conexión segura
 const mysql = require('mysql2');
 
 // Creamos la conexión usando estrictamente las variables del archivo .env

@@ -4,9 +4,7 @@ const db = require('../config/db'); // Conexión a la base de datos MariaDB
 const bcrypt = require('bcrypt');
 const path = require('path');
 
-// ========================================================
 // 1. RUTAS DE VISTAS HTML PRINCIPALES (GET)
-// ========================================================
 router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/login.html'));
 });
@@ -47,11 +45,8 @@ router.get('/datos', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/datos.html'));
 });
 
-// ========================================================
 // 2. AUTENTICACIÓN, REGISTRO Y RECUPERACIÓN (POST)
-// ========================================================
-
-// REGISTRO DE ALUMNOS (100% libre de correos y contraseñas manuales)
+// REGISTRO DE ALUMNOS
 router.post('/register', async (req, res) => {
     let { boleta, nombre, sexo, unidad_de_procedencia } = req.body;
 
@@ -169,10 +164,8 @@ router.post('/forgot', async (req, res) => {
     }
 });
 
-// ========================================================
-// 3. APIS DE GESTIÓN (LIBROS Y PRÉSTAMOS)
-// ========================================================
 
+// 3. APIS DE GESTIÓN (LIBROS Y PRÉSTAMOS)
 router.get('/api/libros', (req, res) => {
     const busqueda = req.query.q || '';
     const searchTerm = `%${busqueda}%`;

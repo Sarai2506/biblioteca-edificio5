@@ -191,9 +191,112 @@ app.post('/api/prestamo/devolver', (req, res) => {
     });
 });
 
+// ==========================================
+// APIS Y RUTAS PARA EL PANEL DE ADMINISTRACIÓN (AJAX / JSON)
+// ==========================================
+
+// 1. Obtener todos los datos para llenar las tablas del panel admin
+app.get('/api/admin/data', (req, res) => {
+    db.query('SELECT * FROM libro', (errL, libros) => {
+        db.query('SELECT boleta, nombre, sexo, unidad_procedencia AS unidad_de_procedencia, email_institucional AS email, rol FROM alumno', (errU, usuarios) => {
+            const queryAdeudos = `
+                SELECT p.*, l.titulo, al.nombre AS alumno 
+                FROM prestamo p 
+                JOIN libro l ON p.id_libro = l.id_libro 
+                JOIN alumno al ON p.boleta = al.boleta
+            `;
+            db.query(queryAdeudos, (errA, adeudos) => {
+                const adeudosMapeados = (adeudos || []).map(a => ({
+                    ...a,
+                    estatus: a.estatus === 'activo' ? 'activo' : a.estatus 
+                }));
+
+                db.query(queryAdeudos, (errV, visitas) => {
+                    res.json({
+                        libros: libros || [],
+                        usuarios: usuarios || [],
+                        adeudos: adeudosMapeados,
+                        visitas: visitas || []
+                    });
+                });
+            });
+        });
+    });
+});
+
+// 2. Crear nuevo libro desde el admin
+app.post('/api/admin/libro/crear', (req, res) => {
+    const { titulo, autor, isbn, descripcion, cantidad_total } = req.body;
+    const stock = cantidad_total || 3;
+    const query = "INSERT INTO libro (titulo, autor, isbn, descripcion, cantidad_total, disponibles) VALUES (?, ?, ?, ?, ?, ?)";
+    
+    db.query(query, [titulo, autor, isbn, descripcion, stock, stock], (err) => {
+        if (err) return res.json({ success: false, message: 'Error al registrar el libro en la BD.' });
+        res.json({ success: true, message: '¡Libro registrado con éxito!' });
+    });
+});
+
+// 3. Actualizar libro existente
+app.post('/api/admin/libro/actualizar', (req, res) => {
+    const { id_libro, titulo, autor, isbn, descripcion, cantidad_total, disponibles } = req.body;
+    const query = "UPDATE libro SET titulo=?, autor=?, isbn=?, descripcion=?, cantidad_total=?, disponibles=? WHERE id_libro=?";
+
+    db.query(query, [titulo, autor, isbn, descripcion, cantidad_total, disponibles, id_libro], (err) => {
+        if (err) return res.json({ success: false, message: 'Error al actualizar el libro.' });
+        res.json({ success: true, message: '¡Libro actualizado correctamente!' });
+    });
+});
+
+// 4. Eliminar libro
+app.post('/api/admin/libro/eliminar', (req, res) => {
+    const { id_libro } = req.body;
+    db.query("DELETE FROM libro WHERE id_libro = ?", [id_libro], (err) => {
+        if (err) return res.json({ success: false, message: 'Error al eliminar el libro.' });
+        res.json({ success: true, message: '¡Libro eliminado del inventario!' });
+    });
+});
+
+// 5. Actualizar datos de un usuario/alumno
+app.post('/api/admin/usuario/actualizar', (req, res) => {
+    const { boleta, nombre, sexo, unidad_de_procedencia, email, rol } = req.body;
+    const query = "UPDATE alumno SET nombre=?, sexo=?, unidad_procedencia=?, email_institucional=?, rol=? WHERE boleta=?";
+
+    db.query(query, [nombre, sexo, unidad_de_procedencia, email, rol, boleta], (err) => {
+        if (err) return res.json({ success: false, message: 'Error al actualizar los datos del usuario.' });
+        res.json({ success: true, message: '¡Usuario actualizado con éxito!' });
+    });
+});
+
+// 6. Eliminar usuario (Funciona perfecto gracias al ON DELETE CASCADE en la BD)
+app.post('/api/admin/usuario/eliminar', (req, res) => {
+    const { boleta } = req.body;
+
+    if (boleta === 'ADMIN001') {
+        return res.json({ success: false, message: 'No se puede eliminar al administrador principal del sistema.' });
+    }
+
+    db.query("DELETE FROM alumno WHERE boleta = ?", [boleta], (err) => {
+        if (err) {
+            console.log('Error al eliminar usuario:', err);
+            return res.json({ success: false, message: 'Error al eliminar el usuario de la base de datos.' });
+        }
+        res.json({ success: true, message: '¡Usuario eliminado correctamente!' });
+    });
+});
+
+// 7. Actualizar estatus o sanciones de visitas/préstamos
+app.post('/api/admin/visita/actualizar', (req, res) => {
+    const { id_visita, observaciones, sancion } = req.body;
+    const query = "UPDATE prestamo SET observaciones = ?, sancion = ? WHERE id_prestamo = ?";
+
+    db.query(query, [observaciones, sancion, id_visita], (err) => {
+        if (err) return res.json({ success: false, message: 'Error al actualizar la evaluación.' });
+        res.json({ success: true, message: '¡Evaluación guardada con éxito!' });
+    });
+});
+
 // --- LÓGICA DE ACCESO (LOGIN, REGISTRO Y RECUPERACIÓN) ---
 
-// Validar el acceso (si es admin pide contra, si es alumno entra directo con la boleta)
 app.post('/login', async (req, res) => {
     let { boleta, password } = req.body;
     boleta = boleta ? boleta.trim() : '';
@@ -214,7 +317,6 @@ app.post('/login', async (req, res) => {
             return res.redirect('/admin');
         } else {
             req.session.usuario = usuario;
-            // Pasamos los datos por query string para que el menú los pinte fácil sin tanto relajo
             const queryParams = new URLSearchParams({
                 boleta: usuario.boleta,
                 nombre: usuario.nombre,
@@ -225,7 +327,7 @@ app.post('/login', async (req, res) => {
     });
 });
 
-// REGISTRO DE ALUMNOS (Aquí validamos que la boleta sea obligatoriamente de 10 dígitos numéricos)
+// REGISTRO DE ALUMNOS (Con validación estricta de exactamente 10 dígitos numéricos)
 app.post('/register', async (req, res) => {
     let { boleta, nombre, sexo, unidad_de_procedencia } = req.body;
 
@@ -256,14 +358,14 @@ app.post('/register', async (req, res) => {
                 console.log('Error al insertar el alumno:', err);
                 return res.status(400).send('Error al registrar: Probablemente esa boleta ya está dada de alta.');
             }
-            return res.redirect('/login'); // Si todo sale bien, lo mandamos al login para que entre
+            return res.redirect('/login');
         });
     } catch (err) {
         res.status(500).send('Error interno del servidor al registrar.');
     }
 });
 
-// Recuperar / cambiar contraseña (por si acaso la olvidan)
+// Recuperar / cambiar contraseña
 app.post('/forgot', async (req, res) => {
     let { boleta, new_password } = req.body;
     boleta = boleta ? boleta.trim() : '';
